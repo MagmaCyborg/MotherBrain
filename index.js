@@ -1,9 +1,8 @@
 const Discord = require('discord.js');
-const {
-    prefix, 
-    token,
-    version,
-} = require('./config.json');
+
+const prefix = "<";
+const version = "1.1.0";
+
 const client = new Discord.Client();
 
 client.once('ready', () => {
@@ -13,7 +12,7 @@ client.once('ready', () => {
 client.on('guildMemberAdd', member => {
     const channel = member.guild.channels.find(channel => channel.name === "welcome");
     if(!channel)    return;
-    channel.send(`Welcome to the server, ${member}!`);
+    channel.send(`Benvenuto nel server, ${member}!`);
 })
 
 client.on('message', message => {
@@ -22,25 +21,26 @@ client.on('message', message => {
     switch(args[0]) {
         case 'help':
             const help = new Discord.RichEmbed()
-            .setTitle('COMMANDS')
-            .addField('help', 'List of all the commands and how they work')
-            .addField('info user', 'Gives information about the user')
-            .addField('info server', 'Gives information about the server')
-            .addField('permission', 'Gives information about advanced permission')
-            .addField('kick', 'Admin and moderator only; kicks a member')
-            .addField('ban', 'Admin and moderator only; bans a member')
-            .setFooter('Prefix for the commands: ' + prefix)
+            .setTitle('COMANDI')
+            .addField('help', 'Lista dei comandi e breve descrizione')
+            .addField('info user', 'Dà informazioni riguardo all\'utente')
+            .addField('info server', 'Dà informazioni riguardo al server')
+            .addField('permission', 'Dà informazioni riguardo ai permessi per certi comandi')
+            .addField('clear', 'Cancella un determinato numero di messaggi nella chat')
+            .addField('kick', 'Espelle un membro del server [SOLO AMMINISTRATORE]')
+            .addField('ban', 'Banna un membro del server [SOLO AMMINISTRATORE]')
+            .setFooter('Prefisso: ' + prefix)
             .setColor(0xFF0000);
             message.channel.sendEmbed(help);
             break;
         case 'info':
-            if (!args[1])    return message.channel.send('No arguments defined!');
+            if (!args[1])    return message.channel.send('Argomenti non definiti!');
             if (args[1] === 'user') {
                 let myrole = message.guild.roles.find(role => role.name === "Administrator");
                 const user = new Discord.RichEmbed()
-                .setTitle('USER INFORMATION')
-                .addField('Name', message.author.username)
-                .addField('Role', myrole)
+                .setTitle('INFORMAZIONI UTENTE')
+                .addField('Nome', message.author.username)
+                .addField('Ruolo', myrole)
                 // .addField('Permission for advanced commands', perm)
                 .setThumbnail(message.author.avatarURL)
                 .setColor(0x48C9B0);
@@ -48,42 +48,42 @@ client.on('message', message => {
             }
             if (args[1] === 'server') {
                 const serv = new Discord.RichEmbed()
-                .setTitle('SERVER INFORMATION')
-                .addField('Name', message.guild.name)
-                .addField('Version', version)
+                .setTitle('INFORMAZIONI SUL SERVER')
+                .addField('Nome', message.guild.name)
+                .addField('Versione', version)
                 .setColor(0xF39C12);
                 message.channel.sendEmbed(serv);
             }
             break;
         case 'permission':
             if (message.member.roles.find(role => role.name === 'Administrator')) {
-                message.reply('You have permission to use advanced commands!');
+                message.reply('Hai il permesso di usare comandi riservati!');
             } else {
-                message.reply('You do not have permission to use advanced commands!');
+                message.reply('Non hai il permesso di usare comandi riservati!');
             }
             break;
         case 'kick':
             if (message.member.roles.find(role => role.name === 'Administrator')) {
                 let member = message.mentions.members.first();
                 member.kick().then((member) => {
-                    message.channel.send(member.displayName + ' has been eaten by some metroids!')
+                    message.channel.send(member.displayName + ' è stato mangiato da dei metroid!')
                 })
             } else {
-                message.reply('You do not have permission for this command');
+                message.reply('Non hai il permesso di usare questo comando!');
             }
             break;
         case 'ban':
             if (message.member.roles.find(role => role.name === 'Administrator')) {
                 let member = message.mentions.members.first();
                 member.ban().then((member) => {
-                    message.channel.send(member.displayName + ' has been banned!');
+                    message.channel.send(member.displayName + ' è stato bannato!');
                 })
             } else {
-                message.reply('You do not have permission for this command');
+                message.reply('Non hai il permesso di usare questo comando!');
             }
             break;
         case 'clear':
-            if (!args[1])   return message.reply('Error! Please define how many messages you want to delete')
+            if (!args[1])   return message.reply('Errore! Definire il numero di messaggi da cancellare')
             message.channel.bulkDelete(args[1]);
             break;
     }
